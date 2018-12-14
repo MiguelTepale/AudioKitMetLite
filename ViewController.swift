@@ -131,6 +131,7 @@ class ViewController: UIViewController {
             label.text = "\(bpmValue)"
             let labelStr = "\(bpmValue)"
             slider.setValue(tempVal, animated: false)
+            sequencer.setTempo(Double(bpmValue))
         }
         print(taps)
 //        let firstTap = taps.first
