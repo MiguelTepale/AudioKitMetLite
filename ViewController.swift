@@ -5,6 +5,13 @@
 //  Created by Sam Parsons on 12/12/18.
 //  Copyright © 2018 Sam Parsons. All rights reserved.
 //
+// OPEN TICKETS
+// 1. Start/Stop button label title switch -- what does for: .normal mean??
+// 2. Improve accuracy of tap tempo
+// ---- Look at timing mechanisms, incorporate more data into calculation
+// ---- Create something to wipe clean the taps array
+// 3. Change sound from snare to simple synth
+
 
 import UIKit
 import AudioKit
@@ -39,32 +46,40 @@ class ViewController: UIViewController {
         label.text = "120"
         
         // button format
-//        start.setTitle("Start", for: UIControl.State) // I don't know how to do this really
+        start.setTitle("Start", for: .normal) // I don't know how to do this really
         
         let sound = AKSynthSnare()
+        var beep = AKOscillatorBank.init(waveform: AKTable(.sine), attackDuration: 0.01, decayDuration: 0.05, sustainLevel: 0.1, releaseDuration: 0.05, pitchBend: 0, vibratoDepth: 0, vibratoRate: 0)
+        
+        var beepNode = AKMIDINode(node: beep)
+//        let envelope = AKAmplitudeEnvelope(beepNode)
+//        envelope.attackDuration = 0.01
+//        envelope.decayDuration = 0.1
+//        envelope.sustainLevel = 0.1
+//        envelope.releaseDuration = 0.3
         let callbackInst = AKMIDICallbackInstrument()
         
-        AudioKit.output = sound
+        AudioKit.output = beepNode
         try! AudioKit.start()
         
         print("here")
     
         let metTrack = sequencer.newTrack()
         sequencer.setLength(AKDuration(beats: 4))
-        sequencer.tracks[0].setMIDIOutput(sound.midiIn)
+        sequencer.tracks[0].setMIDIOutput(beepNode.midiIn)
         let cbTrack = sequencer.newTrack()
         sequencer.tracks[1].setMIDIOutput(callbackInst.midiIn)
     
         print(sequencer.tracks)
     
         // this will trigger the sampler on the four down beats
-        sequencer.tracks[0].add(noteNumber: 60, velocity: 100, position: AKDuration(beats: Double(1)), duration: AKDuration(beats: 0.05))
+        sequencer.tracks[0].add(noteNumber: 80, velocity: 100, position: AKDuration(beats: Double(1)), duration: AKDuration(beats: 0.05))
         
-        sequencer.tracks[0].add(noteNumber: 60, velocity: 100, position: AKDuration(beats: Double(0)), duration: AKDuration(beats: 0.05))
+        sequencer.tracks[0].add(noteNumber: 80, velocity: 100, position: AKDuration(beats: Double(0)), duration: AKDuration(beats: 0.05))
 
-        sequencer.tracks[0].add(noteNumber: 60, velocity: 100, position: AKDuration(beats: Double(2)), duration: AKDuration(beats: 0.05))
+        sequencer.tracks[0].add(noteNumber: 80, velocity: 100, position: AKDuration(beats: Double(2)), duration: AKDuration(beats: 0.05))
 
-        sequencer.tracks[0].add(noteNumber: 60, velocity: 100, position: AKDuration(beats: Double(3)), duration: AKDuration(beats: 0.05))
+        sequencer.tracks[0].add(noteNumber: 80, velocity: 100, position: AKDuration(beats: Double(3)), duration: AKDuration(beats: 0.05))
         
         print(sequencer.tracks[0].getMIDINoteData())
         // set the midiNote number to the current beat number
@@ -91,11 +106,13 @@ class ViewController: UIViewController {
 //        sequencer.play()
     }
 
-    @IBAction func handleToggle(_ sender: Any) {
+    @IBAction func handleToggle(_ sender: UIButton) {
         // should restart sequence playback to 0 seconds position
         if sequencer.isPlaying {
+            start.setTitle("Start", for: .normal)
             sequencer.stop()
         } else {
+            start.setTitle("Stop", for: .normal)
             sequencer.play()
         }
     }
@@ -134,8 +151,6 @@ class ViewController: UIViewController {
             sequencer.setTempo(Double(bpmValue))
         }
         print(taps)
-//        let firstTap = taps.first
-//        let averageIntervals = thisTap.timeIntervalSince(firstTap) / Double(taps.count - 1)
         
         print("tap button pressed")
     }
