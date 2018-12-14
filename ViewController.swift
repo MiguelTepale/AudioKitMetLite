@@ -18,6 +18,12 @@ class ViewController: UIViewController {
     let sequencer = AKSequencer()
     
     @IBOutlet weak var tap: UIButton!
+    // tap tempo
+    let interval: TimeInterval = 0.5
+    let minTaps: Int = 3
+    var taps: [Double] = []
+    var bpmValue: Int = 120
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -86,6 +92,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func handleToggle(_ sender: Any) {
+        // should restart sequence playback to 0 seconds position
         if sequencer.isPlaying {
             sequencer.stop()
         } else {
@@ -100,6 +107,35 @@ class ViewController: UIViewController {
     }
     
     @IBAction func handleTap(_ sender: Any) {
+        print(sequencer.currentPosition.seconds)
+        let thisTap = NSDate()
+        print(thisTap.timeIntervalSince1970)
+//        if var lastTap = taps.last {
+//            if NSTimeIntervalSince1970(Double(lastTap)) > interval {
+//                taps.removeAll()
+//            }
+//        }
+        print(taps.count)
+        if taps.count < 3 {
+            taps.append(thisTap.timeIntervalSince1970)
+            // label on view controller says "keep tapping" until minTaps is met
+        } else {
+            taps.append(thisTap.timeIntervalSince1970)
+            var first = taps[taps.count-1]
+            var second = taps[taps.count-2]
+            var third = taps[taps.count-3]
+            var avg = ((first-second)+(second-third)) / 2
+            print("bpm: ", 60/avg)
+            bpmValue = Int(60/avg)
+            let tempVal = Float(60/avg)
+            label.text = "\(bpmValue)"
+            let labelStr = "\(bpmValue)"
+            slider.setValue(tempVal, animated: false)
+        }
+        print(taps)
+//        let firstTap = taps.first
+//        let averageIntervals = thisTap.timeIntervalSince(firstTap) / Double(taps.count - 1)
+        
         print("tap button pressed")
     }
 }
