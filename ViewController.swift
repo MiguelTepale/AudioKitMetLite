@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var label: UILabel!
     let sequencer = AKSequencer()
     
+    @IBOutlet weak var tap: UIButton!
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -30,6 +31,9 @@ class ViewController: UIViewController {
         
         // label format
         label.text = "120"
+        
+        // button format
+//        start.setTitle("Start", for: UIControl.State) // I don't know how to do this really
         
         let sound = AKSynthSnare()
         let callbackInst = AKMIDICallbackInstrument()
@@ -93,6 +97,10 @@ class ViewController: UIViewController {
         var tempTempo = Int(slider.value)
         sequencer.setTempo(Double(tempTempo))
         label.text = "\(tempTempo)"
+    }
+    
+    @IBAction func handleTap(_ sender: Any) {
+        print("tap button pressed")
     }
 }
 

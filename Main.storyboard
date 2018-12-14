@@ -20,7 +20,7 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="10F-U1-xFk">
                                 <rect key="frame" x="16" y="617" width="343" height="30"/>
-                                <state key="normal" title="Button"/>
+                                <state key="normal" title="Start"/>
                                 <connections>
                                     <action selector="handleToggle:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WtP-D5-6VQ"/>
                                 </connections>
@@ -43,6 +43,14 @@
                                     <action selector="handleSlider:" destination="BYZ-38-t0r" eventType="valueChanged" id="2hB-j9-rdo"/>
                                 </connections>
                             </slider>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jRs-kp-fM1">
+                                <rect key="frame" x="174" y="138" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Tap"/>
+                                <connections>
+                                    <action selector="handleTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="TC8-Sa-FJz"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -58,6 +66,7 @@
                         <outlet property="label" destination="dO9-mU-sR9" id="1xK-LP-HsD"/>
                         <outlet property="slider" destination="1S0-8v-ePw" id="Qq8-NU-tbX"/>
                         <outlet property="start" destination="10F-U1-xFk" id="Z9g-Q6-uLn"/>
+                        <outlet property="tap" destination="jRs-kp-fM1" id="S9D-9O-Ygq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
