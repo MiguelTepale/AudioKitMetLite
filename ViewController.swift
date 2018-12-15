@@ -6,11 +6,11 @@
 //  Copyright © 2018 Sam Parsons. All rights reserved.
 //
 // OPEN TICKETS
-// 1. Start/Stop button label title switch -- what does for: .normal mean??
+// 1. Clean up handleTap()
 // 2. Improve accuracy of tap tempo
-// ---- Look at timing mechanisms, incorporate more data into calculation
+// ---- dynamic range of values that are averaged
 // ---- Create something to wipe clean the taps array
-// 3. Change sound from snare to simple synth
+// 3. Refactor visualization
 
 
 import UIKit
@@ -18,23 +18,24 @@ import AudioKit
 
 class ViewController: UIViewController {
 
+    // UI instantiation
     @IBOutlet weak var start: UIButton!
     @IBOutlet weak var slider: UISlider!
-
     @IBOutlet weak var label: UILabel!
-    let sequencer = AKSequencer()
-    
     @IBOutlet weak var tap: UIButton!
-    // tap tempo
+    
+    // AudioKit objects and data
+    let sequencer = AKSequencer()
+    var bpmValue: Int = 120
+    
+    // tap tempo data
     let interval: TimeInterval = 0.5
     let minTaps: Int = 3
     var taps: [Double] = []
-    var bpmValue: Int = 120
-    
+
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
 
         // slider format
         slider.minimumValue = 30
@@ -48,46 +49,37 @@ class ViewController: UIViewController {
         // button format
         start.setTitle("Start", for: .normal) // I don't know how to do this really
         
-        let sound = AKSynthSnare()
+        // instrument set up - sound and callback
         var beep = AKOscillatorBank.init(waveform: AKTable(.sine), attackDuration: 0.01, decayDuration: 0.05, sustainLevel: 0.1, releaseDuration: 0.05, pitchBend: 0, vibratoDepth: 0, vibratoRate: 0)
-        
         var beepNode = AKMIDINode(node: beep)
-//        let envelope = AKAmplitudeEnvelope(beepNode)
-//        envelope.attackDuration = 0.01
-//        envelope.decayDuration = 0.1
-//        envelope.sustainLevel = 0.1
-//        envelope.releaseDuration = 0.3
         let callbackInst = AKMIDICallbackInstrument()
         
+        // AudioKit final set up phase
         AudioKit.output = beepNode
         try! AudioKit.start()
-        
-        print("here")
     
+        // instantiating metronome and callback tracks and assigning their respective i/o
         let metTrack = sequencer.newTrack()
-        sequencer.setLength(AKDuration(beats: 4))
         sequencer.tracks[0].setMIDIOutput(beepNode.midiIn)
         let cbTrack = sequencer.newTrack()
         sequencer.tracks[1].setMIDIOutput(callbackInst.midiIn)
-    
-        print(sequencer.tracks)
-    
-        // this will trigger the sampler on the four down beats
-        sequencer.tracks[0].add(noteNumber: 80, velocity: 100, position: AKDuration(beats: Double(1)), duration: AKDuration(beats: 0.05))
         
-        sequencer.tracks[0].add(noteNumber: 80, velocity: 100, position: AKDuration(beats: Double(0)), duration: AKDuration(beats: 0.05))
-
-        sequencer.tracks[0].add(noteNumber: 80, velocity: 100, position: AKDuration(beats: Double(2)), duration: AKDuration(beats: 0.05))
-
-        sequencer.tracks[0].add(noteNumber: 80, velocity: 100, position: AKDuration(beats: Double(3)), duration: AKDuration(beats: 0.05))
+        // sequencer settings initiation
+        sequencer.setLength(AKDuration(beats: 4))
+        sequencer.setTempo(120)
+        sequencer.enableLooping()
+    
+        // add audio tracks to sequencer
+        for i in 0..<4 {
+            sequencer.tracks[0].add(noteNumber: 80, velocity: 100, position: AKDuration(beats: Double(i)), duration: AKDuration(beats: 0.05))
+        }
         
-        print(sequencer.tracks[0].getMIDINoteData())
-        // set the midiNote number to the current beat number
-        sequencer.tracks[1].add(noteNumber: MIDINoteNumber(0), velocity: 100, position: AKDuration(beats: Double(0)), duration: AKDuration(beats: 0.05))
-        sequencer.tracks[1].add(noteNumber: MIDINoteNumber(0), velocity: 100, position: AKDuration(beats: Double(1)), duration: AKDuration(beats: 0.05))
-        sequencer.tracks[1].add(noteNumber: MIDINoteNumber(0), velocity: 100, position: AKDuration(beats: Double(2)), duration: AKDuration(beats: 0.05))
-        sequencer.tracks[1].add(noteNumber: MIDINoteNumber(0), velocity: 100, position: AKDuration(beats: Double(3)), duration: AKDuration(beats: 0.05))
+        // add callback tracks to sequencer
+        for i in 0..<4 {
+            sequencer.tracks[1].add(noteNumber: MIDINoteNumber(i), velocity: 100, position: AKDuration(beats: Double(i)), duration: AKDuration(beats: 0.05))
+        }
 
+        // sequencer callback method
         callbackInst.callback = { status, noteNumber, velocity in
             if status == 144 {
                 DispatchQueue.main.sync {
@@ -100,18 +92,15 @@ class ViewController: UIViewController {
             }
             print("beat number: \(noteNumber + 1)")
         }
-        
-        sequencer.setTempo(120)
-        sequencer.enableLooping()
-//        sequencer.play()
     }
 
     @IBAction func handleToggle(_ sender: UIButton) {
-        // should restart sequence playback to 0 seconds position
         if sequencer.isPlaying {
-            start.setTitle("Start", for: .normal)
+            start.setTitle("Start", for: .normal) // What does for: .normal
             sequencer.stop()
         } else {
+            sequencer.rewind()
+            print("restart sequencer position in seconds: ", sequencer.currentPosition.seconds)
             start.setTitle("Stop", for: .normal)
             sequencer.play()
         }
@@ -127,11 +116,6 @@ class ViewController: UIViewController {
         print(sequencer.currentPosition.seconds)
         let thisTap = NSDate()
         print(thisTap.timeIntervalSince1970)
-//        if var lastTap = taps.last {
-//            if NSTimeIntervalSince1970(Double(lastTap)) > interval {
-//                taps.removeAll()
-//            }
-//        }
         print(taps.count)
         if taps.count < 3 {
             taps.append(thisTap.timeIntervalSince1970)
