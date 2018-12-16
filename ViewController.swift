@@ -5,6 +5,8 @@
 //  Created by Sam Parsons on 12/12/18.
 //  Copyright © 2018 Sam Parsons. All rights reserved.
 //
+//
+//
 // OPEN TICKETS
 // 1. Improve accuracy of tap tempo - working seemingly better with first refactor
 // ---- increasing range of values that are averaged with consecutive clips - make this dynamic?
@@ -16,6 +18,8 @@
 // 1. How to implement "lastTap" callback to wipe taps array clean
 // --- How to know what is a last tap? Measure distance from most recent tap time
 // --- Similar to setInterval(), using a conditional in the body
+// 2. How to extract some data and methods into classes?
+// 3. What is .normal in button.setTitle()?
 
 
 import UIKit
@@ -23,6 +27,10 @@ import AudioKit
 
 class ViewController: UIViewController {
     
+    // last tap timer
+//    var lastTapTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: (#selector(ViewController.)), userInfo: nil, repeats: true)
+    var lastTapTimer: Timer?
+
     // visualization image
     @IBOutlet weak var imageView: UIImageView!
     
@@ -55,7 +63,7 @@ class ViewController: UIViewController {
         label.text = "120"
         
         // button format
-        start.setTitle("Start", for: .normal) // I don't know how to do this really
+        start.setTitle("Start", for: .normal) // what is .normal ??
         
         // instrument set up - sound and callback
         var beep = AKOscillatorBank.init(waveform: AKTable(.sine), attackDuration: 0.01, decayDuration: 0.05, sustainLevel: 0.1, releaseDuration: 0.05, pitchBend: 0, vibratoDepth: 0, vibratoRate: 0)
@@ -135,7 +143,6 @@ class ViewController: UIViewController {
             bpmValue = Int(60/avg)
             let tempVal = Float(60/avg)
             label.text = "\(bpmValue)"
-            let labelStr = "\(bpmValue)"
             slider.setValue(tempVal, animated: false)
             sequencer.setTempo(Double(bpmValue))
         } else {
@@ -149,11 +156,24 @@ class ViewController: UIViewController {
             bpmValue = Int(60/avg)
             let tempVal = Float(60/avg)
             label.text = "\(bpmValue)"
-            let labelStr = "\(bpmValue)"
             slider.setValue(tempVal, animated: false)
             sequencer.setTempo(Double(bpmValue))
         }
         print("tap button pressed")
+        
+        // tap interval
+        if (!lastTapTimer.isValid) {
+            lastTapTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true, block: { timer in
+                print("checking for last tap")
+            })
+        } else {
+            lastTapTimer?.invalidate()
+        }
+        
     }
+    
+//    @objc func checkLastTap() {
+//        NSLog("checking for last tap")
+//    }
 }
 
