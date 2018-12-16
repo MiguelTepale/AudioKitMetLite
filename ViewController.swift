@@ -39,6 +39,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var tap: UIButton!
+    @IBOutlet weak var staticBpmLabel: UILabel!
     
     // AudioKit objects and data
     let sequencer = AKSequencer()
@@ -64,6 +65,10 @@ class ViewController: UIViewController {
         
         // button format
         start.setTitle("Start", for: .normal) // what is .normal ??
+        start.layer.cornerRadius = 4
+        
+        // visualization format
+        self.imageView.isHidden = true
         
         // instrument set up - sound and callback
         var beep = AKOscillatorBank.init(waveform: AKTable(.sine), attackDuration: 0.01, decayDuration: 0.05, sustainLevel: 0.1, releaseDuration: 0.05, pitchBend: 0, vibratoDepth: 0, vibratoRate: 0)
@@ -162,13 +167,13 @@ class ViewController: UIViewController {
         print("tap button pressed")
         
         // tap interval
-        if (!lastTapTimer.isValid) {
-            lastTapTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true, block: { timer in
-                print("checking for last tap")
-            })
-        } else {
-            lastTapTimer?.invalidate()
-        }
+//        if (!lastTapTimer.isValid) {
+//            lastTapTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true, block: { timer in
+//                print("checking for last tap")
+//            })
+//        } else {
+//            lastTapTimer?.invalidate()
+//        }
         
     }
     
