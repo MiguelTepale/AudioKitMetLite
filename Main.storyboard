@@ -56,7 +56,7 @@
                                 <size key="shadowOffset" width="1" height="-1"/>
                             </label>
                             <imageView userInteractionEnabled="NO" alpha="0.94999999999999996" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="cyan-circle" translatesAutoresizingMaskIntoConstraints="NO" id="Gxj-KL-ZVg">
-                                <rect key="frame" x="94" y="174" width="183" height="170"/>
+                                <rect key="frame" x="305" y="64" width="54" height="39"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" red="0.40023833749999999" green="1" blue="0.90632809319999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -70,13 +70,20 @@
                                 <color key="shadowColor" red="0.75472163869999997" green="0.54160478300000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <size key="shadowOffset" width="1" height="-1"/>
                             </label>
-                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="1S0-8v-ePw">
+                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="fill" contentVerticalAlignment="top" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="1S0-8v-ePw">
                                 <rect key="frame" x="67" y="508" width="236" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="minimumTrackTintColor" red="0.019607843140000001" green="0.94901960780000005" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="maximumTrackTintColor" red="1" green="0.52456490619999996" blue="0.48079018400000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="thumbTintColor" red="0.73706518219999995" green="0.18925060909999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
                                     <action selector="handleSlider:" destination="BYZ-38-t0r" eventType="valueChanged" id="2hB-j9-rdo"/>
                                 </connections>
                             </slider>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lbE-Uw-lax" customClass="Knob" customModule="MidiMetronome" customModuleProvider="target">
+                                <rect key="frame" x="90" y="178" width="197" height="166"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.2623603211508857" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -90,6 +97,7 @@
                     </view>
                     <connections>
                         <outlet property="imageView" destination="Gxj-KL-ZVg" id="SC8-aQ-qnV"/>
+                        <outlet property="knob" destination="lbE-Uw-lax" id="RaX-K3-vPb"/>
                         <outlet property="label" destination="dO9-mU-sR9" id="1xK-LP-HsD"/>
                         <outlet property="slider" destination="1S0-8v-ePw" id="Qq8-NU-tbX"/>
                         <outlet property="start" destination="10F-U1-xFk" id="Z9g-Q6-uLn"/>

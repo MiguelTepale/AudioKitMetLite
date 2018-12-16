@@ -10,9 +10,11 @@
 // OPEN TICKETS
 // 1. Improve accuracy of tap tempo - working seemingly better with first refactor
 // ---- increasing range of values that are averaged with consecutive clips - make this dynamic?
-// ---- wipe clean the taps array at in intervals triggered directly after the "first tap"
+// ---- wipe clean the taps array at in intervals triggered directly after the "first tap" ***
 // 2. Eliminate performance losses through refactoring visualization - refactored, at bpm > 200
-// 3. Create visually attractive UI layout
+// 3. Refactor tempo selector design to dial/knob interface
+// 4. Make slider's isContinuous = false, per the UIControl property
+// 5. Cmment descriptions of data/methods in Knob.swift for own edification
 //
 // QUESTIONS
 // 1. How to implement "lastTap" callback to wipe taps array clean
@@ -20,12 +22,15 @@
 // --- Similar to setInterval(), using a conditional in the body
 // 2. How to extract some data and methods into classes?
 // 3. What is .normal in button.setTitle()?
+// 4. How to make "Keep Tapping" dynamically fit inside of tap button
 
 
 import UIKit
 import AudioKit
 
 class ViewController: UIViewController {
+    
+    
     
     // last tap timer
 //    var lastTapTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: (#selector(ViewController.)), userInfo: nil, repeats: true)
@@ -35,6 +40,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     
     // UI instantiation
+    @IBOutlet weak var knob: UIView!
     @IBOutlet weak var start: UIButton!
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var label: UILabel!
@@ -135,28 +141,25 @@ class ViewController: UIViewController {
     
     @IBAction func handleTap(_ sender: Any) {
         let thisTap = NSDate()
+        var avg: Double
         if taps.count < 3 {
             taps.append(thisTap.timeIntervalSince1970)
+            tap.setTitle("Keep Tapping", for: .normal) // how to make this dynamically fit in the button without elipses??
             // label on view controller says "keep tapping" until minTaps is met
-        } else if taps.count == 3 {
-            taps.append(thisTap.timeIntervalSince1970)
-            var first = taps[taps.count-1]
-            var second = taps[taps.count-2]
-            var third = taps[taps.count-3]
-            var avg = ((first-second)+(second-third)) / 2
-            print("bpm: ", 60/avg)
-            bpmValue = Int(60/avg)
-            let tempVal = Float(60/avg)
-            label.text = "\(bpmValue)"
-            slider.setValue(tempVal, animated: false)
-            sequencer.setTempo(Double(bpmValue))
         } else {
             taps.append(thisTap.timeIntervalSince1970)
-            var first = taps[taps.count-1]
-            var second = taps[taps.count-2]
-            var third = taps[taps.count-3]
-            var fourth = taps[taps.count-4]
-            var avg = ((first-second)+(second-third)+(third-fourth)) / 3
+            if taps.count == 3 {
+                var first = taps[taps.count-1]
+                var second = taps[taps.count-2]
+                var third = taps[taps.count-3]
+                avg = ((first-second)+(second-third)) / 2
+            } else {
+                var first = taps[taps.count-1]
+                var second = taps[taps.count-2]
+                var third = taps[taps.count-3]
+                var fourth = taps[taps.count-4]
+                avg = ((first-second)+(second-third)+(third-fourth)) / 3
+            }
             print("bpm: ", 60/avg)
             bpmValue = Int(60/avg)
             let tempVal = Float(60/avg)
