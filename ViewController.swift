@@ -6,18 +6,26 @@
 //  Copyright © 2018 Sam Parsons. All rights reserved.
 //
 // OPEN TICKETS
-// 1. Clean up handleTap()
-// 2. Improve accuracy of tap tempo
-// ---- dynamic range of values that are averaged
-// ---- Create something to wipe clean the taps array
-// 3. Refactor visualization
+// 1. Improve accuracy of tap tempo - working seemingly better with first refactor
+// ---- increasing range of values that are averaged with consecutive clips - make this dynamic?
+// ---- wipe clean the taps array at in intervals triggered directly after the "first tap"
+// 2. Eliminate performance losses through refactoring visualization - refactored, at bpm > 200
+// 3. Create visually attractive UI layout
+//
+// QUESTIONS
+// 1. How to implement "lastTap" callback to wipe taps array clean
+// --- How to know what is a last tap? Measure distance from most recent tap time
+// --- Similar to setInterval(), using a conditional in the body
 
 
 import UIKit
 import AudioKit
 
 class ViewController: UIViewController {
-
+    
+    // visualization image
+    @IBOutlet weak var imageView: UIImageView!
+    
     // UI instantiation
     @IBOutlet weak var start: UIButton!
     @IBOutlet weak var slider: UISlider!
@@ -83,20 +91,20 @@ class ViewController: UIViewController {
         callbackInst.callback = { status, noteNumber, velocity in
             if status == 144 {
                 DispatchQueue.main.sync {
-                    self.view.backgroundColor = .cyan
+                    self.imageView.isHidden = false
                 }
+                print("beat number: \(noteNumber + 1)")
             } else if status == 128 {
                 DispatchQueue.main.sync {
-                    self.view.backgroundColor = .white
+                    self.imageView.isHidden = true
                 }
             }
-            print("beat number: \(noteNumber + 1)")
         }
     }
 
     @IBAction func handleToggle(_ sender: UIButton) {
         if sequencer.isPlaying {
-            start.setTitle("Start", for: .normal) // What does for: .normal
+            start.setTitle("Start", for: .normal) // What does for: .normal mean
             sequencer.stop()
         } else {
             sequencer.rewind()
@@ -113,14 +121,11 @@ class ViewController: UIViewController {
     }
     
     @IBAction func handleTap(_ sender: Any) {
-        print(sequencer.currentPosition.seconds)
         let thisTap = NSDate()
-        print(thisTap.timeIntervalSince1970)
-        print(taps.count)
         if taps.count < 3 {
             taps.append(thisTap.timeIntervalSince1970)
             // label on view controller says "keep tapping" until minTaps is met
-        } else {
+        } else if taps.count == 3 {
             taps.append(thisTap.timeIntervalSince1970)
             var first = taps[taps.count-1]
             var second = taps[taps.count-2]
@@ -133,9 +138,21 @@ class ViewController: UIViewController {
             let labelStr = "\(bpmValue)"
             slider.setValue(tempVal, animated: false)
             sequencer.setTempo(Double(bpmValue))
+        } else {
+            taps.append(thisTap.timeIntervalSince1970)
+            var first = taps[taps.count-1]
+            var second = taps[taps.count-2]
+            var third = taps[taps.count-3]
+            var fourth = taps[taps.count-4]
+            var avg = ((first-second)+(second-third)+(third-fourth)) / 3
+            print("bpm: ", 60/avg)
+            bpmValue = Int(60/avg)
+            let tempVal = Float(60/avg)
+            label.text = "\(bpmValue)"
+            let labelStr = "\(bpmValue)"
+            slider.setValue(tempVal, animated: false)
+            sequencer.setTempo(Double(bpmValue))
         }
-        print(taps)
-        
         print("tap button pressed")
     }
 }
