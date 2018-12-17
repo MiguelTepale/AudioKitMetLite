@@ -2,24 +2,39 @@
 //  Knob.swift
 //  MidiMetronome
 //
-//  Created by Sam Parsons on 12/16/18.
-//  Copyright © 2018 Sam Parsons. All rights reserved.
+//  Created by Lorenzo Boaro.
 //
 
 import UIKit
 
 class Knob: UIControl {
 
-    var minimumValue: Float = 0
-    var maximumValue: Float = 1
+    var minimumValue: Float = 30
+    var maximumValue: Float = 260
     private (set) var value: Float = 0
-    func setValue(_ newValue: Float, animated: Bool = false) {
-        value = min(maximumValue, max(minimumValue, newValue))
-    }
     var isContinuous = true
     
     private let renderer = KnobRenderer()
     
+    var lineWidth: CGFloat {
+        get { return renderer.lineWidth }
+        set { renderer.lineWidth = newValue }
+    }
+    
+    var startAngle: CGFloat {
+        get { return renderer.startAngle }
+        set { renderer.startAngle = newValue }
+    }
+    
+    var endAngle: CGFloat {
+        get { return renderer.endAngle }
+        set { renderer.endAngle = newValue}
+    }
+    
+    var pointerLength: CGFloat {
+        get { return renderer.pointerLength }
+        set { renderer.pointerLength = newValue }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -40,6 +55,14 @@ class Knob: UIControl {
         layer.addSublayer(renderer.pointerLayer)
     }
 
+    func setValue(_ newValue: Float, animated: Bool = false) {
+        value = min(maximumValue, max(minimumValue, newValue))
+        
+        let angleRange = endAngle - startAngle
+        let valueRange = maximumValue - minimumValue
+        let angleValue = CGFloat(value - minimumValue) / CGFloat(valueRange) * angleRange + startAngle
+        renderer.setPointerAngle(angleValue, animated: animated)
+    }
 }
 
 private class KnobRenderer {
@@ -81,6 +104,22 @@ private class KnobRenderer {
     private (set) var pointerAngle: CGFloat = CGFloat(-Double.pi) * 11 / 8
     
     func setPointerAngle(_ newPointerAngle: CGFloat, animated: Bool = false) {
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        
+        pointerLayer.transform = CATransform3DMakeRotation(newPointerAngle, 0, 0, 1)
+        
+        if animated {
+            let midAngleValue = (max(newPointerAngle, pointerAngle) - min(newPointerAngle, pointerAngle)) / 2 + min(newPointerAngle, pointerAngle)
+            let animation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+            animation.values = [pointerAngle, midAngleValue, newPointerAngle]
+            animation.keyTimes = [0.0, 0.5, 1.0]
+            animation.timingFunctions = [CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)]
+            pointerLayer.add(animation, forKey: nil)
+        }
+        
+        CATransaction.commit()
+        
         pointerAngle = newPointerAngle
     }
     

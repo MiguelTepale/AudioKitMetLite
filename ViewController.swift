@@ -14,7 +14,8 @@
 // 2. Eliminate performance losses through refactoring visualization - refactored, at bpm > 200
 // 3. Refactor tempo selector design to dial/knob interface
 // 4. Make slider's isContinuous = false, per the UIControl property
-// 5. Cmment descriptions of data/methods in Knob.swift for own edification
+// 5. Comment descriptions of data/methods in Knob.swift for own edification
+// 6. change range of knob instantiation
 //
 // QUESTIONS
 // 1. How to implement "lastTap" callback to wipe taps array clean
@@ -40,7 +41,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     
     // UI instantiation
-    @IBOutlet weak var knob: UIView!
+
+    @IBOutlet weak var knob: Knob!
     @IBOutlet weak var start: UIButton!
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var label: UILabel!
@@ -119,6 +121,9 @@ class ViewController: UIViewController {
                 }
             }
         }
+        knob.setValue(120)
+        knob.lineWidth = 4
+        knob.pointerLength = 12
     }
 
     @IBAction func handleToggle(_ sender: UIButton) {
@@ -134,6 +139,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func handleSlider(_ sender: Any) {
+        knob.setValue(slider.value, animated: true)
         var tempTempo = Int(slider.value)
         sequencer.setTempo(Double(tempTempo))
         label.text = "\(tempTempo)"
@@ -166,7 +172,11 @@ class ViewController: UIViewController {
             label.text = "\(bpmValue)"
             slider.setValue(tempVal, animated: false)
             sequencer.setTempo(Double(bpmValue))
+            knob.setValue(tempVal, animated: true)
         }
+
+        
+
         print("tap button pressed")
         
         // tap interval
@@ -179,6 +189,8 @@ class ViewController: UIViewController {
 //        }
         
     }
+    
+    
     
 //    @objc func checkLastTap() {
 //        NSLog("checking for last tap")

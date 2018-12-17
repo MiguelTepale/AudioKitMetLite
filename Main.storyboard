@@ -83,6 +83,9 @@
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lbE-Uw-lax" customClass="Knob" customModule="MidiMetronome" customModuleProvider="target">
                                 <rect key="frame" x="90" y="178" width="197" height="166"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="handleValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="B8K-gU-jh6"/>
+                                </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="0.2623603211508857" alpha="1" colorSpace="calibratedWhite"/>
@@ -97,7 +100,7 @@
                     </view>
                     <connections>
                         <outlet property="imageView" destination="Gxj-KL-ZVg" id="SC8-aQ-qnV"/>
-                        <outlet property="knob" destination="lbE-Uw-lax" id="RaX-K3-vPb"/>
+                        <outlet property="knob" destination="lbE-Uw-lax" id="1g4-2n-XiK"/>
                         <outlet property="label" destination="dO9-mU-sR9" id="1xK-LP-HsD"/>
                         <outlet property="slider" destination="1S0-8v-ePw" id="Qq8-NU-tbX"/>
                         <outlet property="start" destination="10F-U1-xFk" id="Z9g-Q6-uLn"/>
