@@ -12,10 +12,9 @@
 // ---- increasing range of values that are averaged with consecutive clips - make this dynamic?
 // ---- wipe clean the taps array at in intervals triggered directly after the "first tap" ***
 // 2. Eliminate performance losses through refactoring visualization - refactored, at bpm > 200
-// 3. Refactor tempo selector design to dial/knob interface
-// 4. Make slider's isContinuous = false, per the UIControl property
-// 5. Comment descriptions of data/methods in Knob.swift for own edification
 // 6. change range of knob instantiation
+// 7. clear up handleSlider() logic
+// 8. stylize and hook up circularSlider
 //
 // QUESTIONS
 // 1. How to implement "lastTap" callback to wipe taps array clean
@@ -41,7 +40,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     
     // UI instantiation
-
     @IBOutlet weak var knob: Knob!
     @IBOutlet weak var start: UIButton!
     @IBOutlet weak var slider: UISlider!
@@ -66,7 +64,7 @@ class ViewController: UIViewController {
         slider.minimumValue = 30
         slider.maximumValue = 260
         slider.value = 120
-        slider.isContinuous = false
+        slider.isContinuous = true
         
         // label format
         label.text = "120"
@@ -124,6 +122,8 @@ class ViewController: UIViewController {
         knob.setValue(120)
         knob.lineWidth = 4
         knob.pointerLength = 12
+        knob.addTarget(self, action: #selector(ViewController.handleSlider(_:)), for: .valueChanged)
+        
     }
 
     @IBAction func handleToggle(_ sender: UIButton) {
@@ -139,10 +139,18 @@ class ViewController: UIViewController {
     }
     
     @IBAction func handleSlider(_ sender: Any) {
-        knob.setValue(slider.value, animated: true)
-        var tempTempo = Int(slider.value)
-        sequencer.setTempo(Double(tempTempo))
-        label.text = "\(tempTempo)"
+        if sender is UISlider {
+            knob.setValue(slider.value, animated: true)
+            var tempTempo = Int(slider.value)
+            sequencer.setTempo(Double(tempTempo))
+            label.text = "\(tempTempo)"
+        } else {
+            slider.value = knob.value
+            var tempTempo = Int(slider.value)
+            label.text = "\(tempTempo)"
+        }
+//        updateLabel()
+
     }
     
     @IBAction func handleTap(_ sender: Any) {
@@ -174,6 +182,7 @@ class ViewController: UIViewController {
             sequencer.setTempo(Double(bpmValue))
             knob.setValue(tempVal, animated: true)
         }
+        
 
         
 
@@ -189,6 +198,10 @@ class ViewController: UIViewController {
 //        }
         
     }
+    
+//    private func updateLabel() {
+//        label.text = String(format: "%.2f", knob.value)
+//    }
     
     
     
