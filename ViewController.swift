@@ -27,6 +27,7 @@
 
 import UIKit
 import AudioKit
+import JOCircularSlider
 
 class ViewController: UIViewController {
     
@@ -40,6 +41,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     
     // UI instantiation
+    
+    @IBOutlet weak var circularSlider: CircularSlider!
     @IBOutlet weak var knob: Knob!
     @IBOutlet weak var start: UIButton!
     @IBOutlet weak var slider: UISlider!
@@ -124,6 +127,8 @@ class ViewController: UIViewController {
         knob.pointerLength = 12
         knob.addTarget(self, action: #selector(ViewController.handleSlider(_:)), for: .valueChanged)
         
+        circularSlider.setValue(120)
+        
     }
 
     @IBAction func handleToggle(_ sender: UIButton) {
@@ -142,11 +147,20 @@ class ViewController: UIViewController {
         if sender is UISlider {
             knob.setValue(slider.value, animated: true)
             var tempTempo = Int(slider.value)
+            circularSlider.setValue(Float(tempTempo))
             sequencer.setTempo(Double(tempTempo))
+            label.text = "\(tempTempo)"
+        } else if sender is JOCircularSlider.CircularSlider {
+            print(circularSlider.value)
+            slider.value = ((circularSlider.value * 230)+30)
+            knob.setValue(slider.value)
+            var tempTempo = Int(slider.value)
             label.text = "\(tempTempo)"
         } else {
             slider.value = knob.value
+            circularSlider.setValue(slider.value)
             var tempTempo = Int(slider.value)
+            circularSlider.setValue(Float(tempTempo))
             label.text = "\(tempTempo)"
         }
 //        updateLabel()
@@ -181,6 +195,7 @@ class ViewController: UIViewController {
             slider.setValue(tempVal, animated: false)
             sequencer.setTempo(Double(bpmValue))
             knob.setValue(tempVal, animated: true)
+            circularSlider.setValue(tempVal)
         }
         
 
