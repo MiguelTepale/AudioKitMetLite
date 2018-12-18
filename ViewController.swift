@@ -73,7 +73,7 @@ class ViewController: UIViewController {
         label.text = "120"
         
         // button format
-        start.setTitle("Start", for: .normal) // what is .normal ??
+//        start.setTitle("Start", for: .normal) // what is .normal ??
         start.applyDesign()
         
         // visualization format
