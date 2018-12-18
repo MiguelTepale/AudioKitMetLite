@@ -74,7 +74,7 @@ class ViewController: UIViewController {
         
         // button format
         start.setTitle("Start", for: .normal) // what is .normal ??
-        start.layer.cornerRadius = 4
+        start.applyDesign()
         
         // visualization format
         self.imageView.isHidden = true
@@ -223,5 +223,15 @@ class ViewController: UIViewController {
 //    @objc func checkLastTap() {
 //        NSLog("checking for last tap")
 //    }
+}
+
+extension UIButton {
+    func applyDesign() {
+        self.layer.cornerRadius = 8
+        self.layer.shadowColor = UIColor.darkGray.cgColor
+        self.layer.shadowRadius = 6
+        self.layer.shadowOpacity = 0.5
+        self.layer.shadowOffset = CGSize(width: 0, height: 0)
+    }
 }
 
