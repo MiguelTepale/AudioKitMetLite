@@ -35,8 +35,8 @@
                                     <action selector="handleTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="TC8-Sa-FJz"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dO9-mU-sR9">
-                                <rect key="frame" x="98" y="426" width="106" height="56"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="120" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dO9-mU-sR9">
+                                <rect key="frame" x="80" y="426" width="106" height="56"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="40"/>
                                 <color key="textColor" red="0.79562509059906006" green="0.80325788259506226" blue="0.81692427396774292" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -51,7 +51,7 @@
                                 <color key="tintColor" red="0.40023833749999999" green="1" blue="0.90632809319999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="BPM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oVd-7x-Igl">
-                                <rect key="frame" x="209" y="443" width="52" height="30"/>
+                                <rect key="frame" x="191" y="443" width="52" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="GurmukhiMN" family="Gurmukhi MN" pointSize="24"/>
                                 <color key="textColor" red="0.79562509059906006" green="0.80325788259506226" blue="0.81692427396774292" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -70,7 +70,7 @@
                                 </connections>
                             </slider>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lbE-Uw-lax" customClass="Knob" customModule="MidiMetronome" customModuleProvider="target">
-                                <rect key="frame" x="152" y="358" width="71" height="62"/>
+                                <rect key="frame" x="32" y="375" width="28" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" red="0.79562509059999997" green="0.80325788259999997" blue="0.81692427400000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
@@ -96,7 +96,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KnI-7b-giH" customClass="CircularSlider" customModule="JOCircularSlider">
-                                <rect key="frame" x="62" y="145" width="250" height="252"/>
+                                <rect key="frame" x="62" y="111" width="250" height="252"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -143,6 +143,13 @@
                                     <action selector="handleSlider:" destination="BYZ-38-t0r" eventType="valueChanged" id="PMv-Id-FdT"/>
                                 </connections>
                             </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Allegro Moderato" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nzu-cc-rZI">
+                                <rect key="frame" x="122" y="385" width="145" height="25"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Avenir-Oblique" family="Avenir" pointSize="18"/>
+                                <color key="textColor" red="0.79562509059999997" green="0.80325788259999997" blue="0.81692427400000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.23726633191108704" green="0.26844170689582825" blue="0.30752918124198914" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -156,6 +163,7 @@
                         <outlet property="start" destination="10F-U1-xFk" id="Z9g-Q6-uLn"/>
                         <outlet property="staticBpmLabel" destination="oVd-7x-Igl" id="pA5-iD-gx4"/>
                         <outlet property="tap" destination="jRs-kp-fM1" id="S9D-9O-Ygq"/>
+                        <outlet property="tempoIndicator" destination="Nzu-cc-rZI" id="KK8-J0-M4v"/>
                         <outlet property="titleLabel" destination="0Sg-XO-Y5B" id="NZp-NM-pE8"/>
                     </connections>
                 </viewController>

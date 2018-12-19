@@ -8,18 +8,15 @@
 //
 //
 // OPEN TICKETS
-// 1. Improve accuracy of tap tempo - working seemingly better with first refactor
-// ---- increasing range of values that are averaged with consecutive clips - make this dynamic?
-// ---- wipe clean the taps array at in intervals triggered directly after the "first tap" ***
-// 2. Eliminate performance losses through refactoring visualization - refactored, at bpm > 200
-// 7. clear up handleSlider() logic
+// 1. wipe clean the taps array at in intervals triggered directly after the "first tap" ***
+// 2. clear up handleSlider() logic
 //
 // QUESTIONS
 // 1. How to implement "lastTap" callback to wipe taps array clean
 // --- How to know what is a last tap? Measure distance from most recent tap time
 // --- Similar to setInterval(), using a conditional in the body
 // 2. How to extract some data and methods into classes?
-// 4. How to make "Keep Tapping" dynamically fit inside of tap button
+// 3. How to make "Keep Tapping" dynamically fit inside of tap button
 
 
 import UIKit
@@ -38,10 +35,9 @@ class ViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     
     // UI instantiation
-    
-    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var circularSlider: CircularSlider!
+    @IBOutlet weak var tempoIndicator: UILabel!
     @IBOutlet weak var knob: Knob!
     @IBOutlet weak var start: UIButton!
     @IBOutlet weak var slider: UISlider!
@@ -130,6 +126,7 @@ class ViewController: UIViewController {
         knob.isHidden = true
         
         circularSlider.setValue(120)
+        updateTempoLabel(bpm: 120)
     }
 
     @IBAction func handleToggle(_ sender: UIButton) {
@@ -145,9 +142,10 @@ class ViewController: UIViewController {
     }
     
     @IBAction func handleSlider(_ sender: Any) {
+        var tempTempo: Int
         if sender is UISlider {
             knob.setValue(slider.value, animated: true)
-            var tempTempo = Int(slider.value)
+            tempTempo = Int(slider.value)
             circularSlider.setValue(Float(tempTempo))
             sequencer.setTempo(Double(tempTempo))
             label.text = "\(tempTempo)"
@@ -155,17 +153,17 @@ class ViewController: UIViewController {
             print(circularSlider.value)
             slider.value = ((circularSlider.value * 230)+30)
             knob.setValue(slider.value)
-            var tempTempo = Int(slider.value)
+            tempTempo = Int(slider.value)
             label.text = "\(tempTempo)"
         } else {
             slider.value = knob.value
             circularSlider.setValue(slider.value)
-            var tempTempo = Int(slider.value)
+            tempTempo = Int(slider.value)
             circularSlider.setValue(Float(tempTempo))
             label.text = "\(tempTempo)"
         }
 //        updateLabel()
-
+        updateTempoLabel(bpm: tempTempo)
     }
     
     @IBAction func handleTap(_ sender: Any) {
@@ -213,6 +211,30 @@ class ViewController: UIViewController {
 //            lastTapTimer?.invalidate()
 //        }
         
+    }
+    
+    private func updateTempoLabel(bpm: Int) {
+        if bpm < 45 {
+            tempoIndicator.text = "Grave"
+        } else if bpm < 60 {
+            tempoIndicator.text = "Largo"
+        } else if bpm < 66 {
+            tempoIndicator.text = "Larghetto"
+        } else if bpm < 76 {
+            tempoIndicator.text = "Adagio"
+        } else if bpm < 108 {
+            tempoIndicator.text = "Andante"
+        } else if bpm < 120 {
+            tempoIndicator.text = "Moderato"
+        } else if bpm < 156 {
+            tempoIndicator.text = "Allegro"
+        } else if bpm < 176 {
+            tempoIndicator.text = "Vivace"
+        } else if bpm < 200 {
+            tempoIndicator.text = "Presto"
+        } else if bpm >= 200 {
+            tempoIndicator.text = "Prestissimo"
+        }
     }
     
 //    private func updateLabel() {
