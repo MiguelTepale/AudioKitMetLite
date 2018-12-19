@@ -213,6 +213,18 @@ class ViewController: UIViewController {
         
     }
     
+
+    @IBAction func showSettings(_ sender: Any) {
+        let settingsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "sbSettingsID") as! SettingsViewController
+        
+        self.addChild(settingsVC)
+        settingsVC.view.frame = self.view.frame
+        self.view.addSubview(settingsVC.view)
+        settingsVC.didMove(toParent: self)
+    }
+    
+
+    
     private func updateTempoLabel(bpm: Int) {
         if bpm < 45 {
             tempoIndicator.text = "Grave"
