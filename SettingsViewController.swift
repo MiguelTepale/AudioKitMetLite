@@ -5,11 +5,19 @@
 //  Created by Andrew Seeley.
 //  Modified for MidiMetronome by Sam Parsons on 12/18/18.
 //
+// OPEN TICKETS
+// 1. wtf kind of data structures can I use and how do I use them?
 
 import UIKit
+import AudioKit
 
 class SettingsViewController: UIViewController {
 
+    
+    @IBOutlet weak var freqLabel: UILabel!
+    @IBOutlet weak var decFreqBtn: UIButton!
+    @IBOutlet weak var incFreqBtn: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -44,6 +52,34 @@ class SettingsViewController: UIViewController {
             }
         });
     }
+    
+    @IBAction func increaseFreq(_ sender: Any) {
+        print("increasing frequency")
+        var tempLabel = freqLabel.text
+        generateMIDIOutput(note: tempLabel ?? "C5", incDec: true)
+        generateNextNote(note: tempLabel ?? "C5")
+    }
+    
+    @IBAction func decreaseFreq(_ sender: Any) {
+        print("decreasing frequency")
+        var tempLabel = freqLabel.text
+        generateMIDIOutput(note: tempLabel ?? "C5", incDec: false)
+        generateNextNote(note: tempLabel ?? "C5")
+    }
+    
+    func generateMIDIOutput(note: String, incDec: Bool) {
+        print("generating MIDI output number")
+        if (incDec) { // incDec is a bool to keep track which button pressed
+            print("increase button pressed")
+        } else {
+            print("decrease button pressed")
+        }
+    }
+    
+    func generateNextNote(note: String) {
+        print(note)
+    }
+    
     /*
     // MARK: - Navigation
 

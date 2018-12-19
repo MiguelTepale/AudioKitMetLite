@@ -10,6 +10,7 @@
 // OPEN TICKETS
 // 1. wipe clean the taps array at in intervals triggered directly after the "first tap" ***
 // 2. clear up handleSlider() logic
+// 3. settings note change button operation logic - research data structures and methods
 //
 // QUESTIONS
 // 1. How to implement "lastTap" callback to wipe taps array clean
@@ -216,14 +217,11 @@ class ViewController: UIViewController {
 
     @IBAction func showSettings(_ sender: Any) {
         let settingsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "sbSettingsID") as! SettingsViewController
-        
         self.addChild(settingsVC)
         settingsVC.view.frame = self.view.frame
         self.view.addSubview(settingsVC.view)
         settingsVC.didMove(toParent: self)
     }
-    
-
     
     private func updateTempoLabel(bpm: Int) {
         if bpm < 45 {
