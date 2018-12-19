@@ -12,16 +12,13 @@
 // ---- increasing range of values that are averaged with consecutive clips - make this dynamic?
 // ---- wipe clean the taps array at in intervals triggered directly after the "first tap" ***
 // 2. Eliminate performance losses through refactoring visualization - refactored, at bpm > 200
-// 6. change range of knob instantiation
 // 7. clear up handleSlider() logic
-// 8. stylize and hook up circularSlider
 //
 // QUESTIONS
 // 1. How to implement "lastTap" callback to wipe taps array clean
 // --- How to know what is a last tap? Measure distance from most recent tap time
 // --- Similar to setInterval(), using a conditional in the body
 // 2. How to extract some data and methods into classes?
-// 3. What is .normal in button.setTitle()?
 // 4. How to make "Keep Tapping" dynamically fit inside of tap button
 
 
@@ -42,6 +39,8 @@ class ViewController: UIViewController {
     
     // UI instantiation
     
+    
+    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var circularSlider: CircularSlider!
     @IBOutlet weak var knob: Knob!
     @IBOutlet weak var start: UIButton!
@@ -113,12 +112,14 @@ class ViewController: UIViewController {
         callbackInst.callback = { status, noteNumber, velocity in
             if status == 144 {
                 DispatchQueue.main.sync {
-                    self.imageView.isHidden = false
+//                    self.imageView.isHidden = false
+                    self.circularSlider.color1 = UIColor.white
                 }
                 print("beat number: \(noteNumber + 1)")
             } else if status == 128 {
                 DispatchQueue.main.sync {
-                    self.imageView.isHidden = true
+//                    self.imageView.isHidden = true
+                    self.circularSlider.color1 = UIColor.lightGray
                 }
             }
         }
@@ -126,9 +127,9 @@ class ViewController: UIViewController {
         knob.lineWidth = 4
         knob.pointerLength = 12
         knob.addTarget(self, action: #selector(ViewController.handleSlider(_:)), for: .valueChanged)
+        knob.isHidden = true
         
         circularSlider.setValue(120)
-        
     }
 
     @IBAction func handleToggle(_ sender: UIButton) {
