@@ -8,16 +8,10 @@
 //
 //
 // OPEN TICKETS
+// 1. arrIndex needs to be sent and come back from SettingsViewController
 // 2. clear up handleSlider() logic
-// 3. clean up frequency change and hook up duration change
+// 3. hook up duration change
 //
-// QUESTIONS
-// 1. How to implement "lastTap" callback to wipe taps array clean
-// --- How to know what is a last tap? Measure distance from most recent tap time
-// --- Similar to setInterval(), using a conditional in the body
-// 2. Types of data structures
-// 3. How to make "Keep Tapping" dynamically fit inside of tap button -- needs responsive tap button
-// 4. How to share data between view controllers?
 
 
 import UIKit
@@ -44,6 +38,7 @@ class ViewController: UIViewController {
     let sequencer = AKSequencer()
     var bpmValue: Int = 120
     var beepFreq: Double = 880.0
+    var arrIndex = 12
     
     // tap tempo data
     let interval: TimeInterval = 0.5
@@ -64,7 +59,6 @@ class ViewController: UIViewController {
         label.text = "120"
         
         // button format
-//        start.setTitle("Start", for: .normal) // what is .normal ??
         start.applyDesign()
         
         // visualization format
@@ -106,13 +100,11 @@ class ViewController: UIViewController {
         callbackInst.callback = { status, noteNumber, velocity in
             if status == 144 {
                 DispatchQueue.main.sync {
-//                    self.imageView.isHidden = false
                     self.circularSlider.color1 = UIColor.white
                 }
                 print("beat number: \(noteNumber + 1)")
             } else if status == 128 {
                 DispatchQueue.main.sync {
-//                    self.imageView.isHidden = true
                     self.circularSlider.color1 = UIColor.lightGray
                 }
             }
@@ -161,7 +153,6 @@ class ViewController: UIViewController {
             circularSlider.setValue(Float(tempTempo))
             label.text = "\(tempTempo)"
         }
-//        updateLabel()
         updateTempoLabel(bpm: tempTempo)
     }
     
@@ -202,24 +193,20 @@ class ViewController: UIViewController {
         }
         
         print("tap button pressed")
-        
-        // tap interval
-//        if (!lastTapTimer.isValid) {
-//            lastTapTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true, block: { timer in
-//                print("checking for last tap")
-//            })
-//        } else {
-//            lastTapTimer?.invalidate()
-//        }
-        
     }
     
 
     @IBAction func showSettings(_ sender: Any) {
-    
         let settingsViewController = storyboard?.instantiateViewController(withIdentifier: "sbSettingsID") as! SettingsViewController
         settingsViewController.sequencer = sequencer
+        settingsViewController.arrIndex = arrIndex
         present(settingsViewController, animated: true, completion: nil)
+    }
+    
+    func onUserAction(data: Int) {
+        print(data)
+        arrIndex = data
+        print("arrIndex: ", arrIndex)
     }
     
     private func updateTempoLabel(bpm: Int) {
@@ -245,16 +232,6 @@ class ViewController: UIViewController {
             tempoIndicator.text = "Prestissimo"
         }
     }
-    
-//    private func updateLabel() {
-//        label.text = String(format: "%.2f", knob.value)
-//    }
-    
-    
-    
-//    @objc func checkLastTap() {
-//        NSLog("checking for last tap")
-//    }
 }
 
 extension UIButton {
