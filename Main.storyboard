@@ -173,6 +173,7 @@
                         <outlet property="tap" destination="jRs-kp-fM1" id="S9D-9O-Ygq"/>
                         <outlet property="tempoIndicator" destination="Nzu-cc-rZI" id="KK8-J0-M4v"/>
                         <outlet property="titleLabel" destination="0Sg-XO-Y5B" id="NZp-NM-pE8"/>
+                        <segue destination="Bzm-9n-dON" kind="presentation" identifier="indexSegue" id="eEW-gx-cFz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

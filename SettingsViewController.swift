@@ -10,28 +10,30 @@
 import UIKit
 import AudioKit
 
-class SettingsViewController: UIViewController {
+protocol passDataBack {
+    func setArrIndex(index: Int)
+}
+
+class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationControllerDelegate {
 
     var mainView: ViewController = ViewController(nibName: nil, bundle: nil)
     var sequencer = AKSequencer()
+    var arrIndexProtocol: passDataBack?
     
     @IBOutlet weak var freqLabel: UILabel!
     @IBOutlet weak var decFreqBtn: UIButton!
     @IBOutlet weak var incFreqBtn: UIButton!
-    
 
     var beepNumberArr: [MIDINoteNumber] = []
     var beepNoteArr: [String] = [
         "A4", "Bb4", "B4", "C5", "Db5", "D5", "Eb5", "E5", "F5", "Gb5", "G5", "Ab5", "A5", "Bb5", "B5", "C6", "Db6", "D6", "Eb6", "E6", "F6", "Gb6", "G6", "Ab6", "A6"
     ]
-    var arrIndex: Int = 12
+    var arrIndex: Int = 12 // how to read this variable from segue?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.view.backgroundColor = UIColor.black.withAlphaComponent(0.75)
-        
-        
         
         for i in 0...25 {
             var tempVar = i + 69
@@ -39,14 +41,25 @@ class SettingsViewController: UIViewController {
         }
         print(beepNumberArr)
     
-        arrIndex = (mainView.arrIndex)
+        print(arrIndex)
         freqLabel.text = beepNoteArr[arrIndex]
+        print("set up arrINdex: ", arrIndex)
     }
     
 
     @IBAction func closeSettings(_ sender: Any)  {
-        mainView.onUserAction(data: arrIndex)
+        print("arrIndexProtocol")
+        print(arrIndex)
+//        performSegue(withIdentifier: "indexSegueBack", sender: self)
+        arrIndexProtocol?.setArrIndex(index: arrIndex)
+//        mainView.onUserAction(data: arrIndex)
         dismiss(animated: true, completion: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        mainView.arrIndex = self.arrIndex
+        mainView.sequencer = self.sequencer
     }
     
 //    func showAnimate() {
@@ -122,6 +135,10 @@ class SettingsViewController: UIViewController {
         }
     }
     
+    private func webViewDidFinishLoad(webView: UIWebView) {
+        arrIndexProtocol?.setArrIndex(index: arrIndex)
+    }
+    
     /*
     // MARK: - Navigation
 
@@ -132,4 +149,10 @@ class SettingsViewController: UIViewController {
     }
     */
 
+}
+
+extension SettingsViewController {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        (mainView as? ViewController)?.arrIndex = arrIndex
+    }
 }

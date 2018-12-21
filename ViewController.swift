@@ -18,7 +18,7 @@ import UIKit
 import AudioKit
 import JOCircularSlider
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, passDataBack {
 
     // visualization image
     @IBOutlet weak var imageView: UIImageView!
@@ -35,10 +35,11 @@ class ViewController: UIViewController {
     @IBOutlet weak var staticBpmLabel: UILabel!
     
     // AudioKit objects and data
-    let sequencer = AKSequencer()
+    var sequencer = AKSequencer()
     var bpmValue: Int = 120
     var beepFreq: Double = 880.0
-    var arrIndex = 12
+    var arrIndex: Int?
+    var arrIndexSent: Int?
     
     // tap tempo data
     let interval: TimeInterval = 0.5
@@ -49,6 +50,8 @@ class ViewController: UIViewController {
         
         super.viewDidLoad()
 
+        arrIndex = 12
+        
         // slider format
         slider.minimumValue = 30
         slider.maximumValue = 260
@@ -197,19 +200,30 @@ class ViewController: UIViewController {
     
 
     @IBAction func showSettings(_ sender: Any) {
+        print("show settings", arrIndex)
         let settingsViewController = storyboard?.instantiateViewController(withIdentifier: "sbSettingsID") as! SettingsViewController
         settingsViewController.sequencer = sequencer
-        settingsViewController.arrIndex = arrIndex
+        settingsViewController.arrIndex = arrIndex!
+//        performSegue(withIdentifier: "indexSegue", sender: self)
+        settingsViewController.arrIndexProtocol = self
         present(settingsViewController, animated: true, completion: nil)
     }
     
-    func onUserAction(data: Int) {
-        print(data)
-        arrIndex = data
-        print("arrIndex: ", arrIndex)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        var vc = segue.destination as! SettingsViewController
+        vc.arrIndex = self.arrIndex!
+        vc.sequencer = self.sequencer
     }
     
+//    func onUserAction(data: Int) {
+//        print(data)
+//        arrIndex = data
+//        print("arrIndex: ", arrIndex)
+//        arrIndex = arrIndex!
+//    }
+    
     private func updateTempoLabel(bpm: Int) {
+        print(arrIndex)
         if bpm < 45 {
             tempoIndicator.text = "Grave"
         } else if bpm < 60 {
@@ -231,6 +245,12 @@ class ViewController: UIViewController {
         } else if bpm >= 200 {
             tempoIndicator.text = "Prestissimo"
         }
+    }
+    
+    func setArrIndex(index: Int) {
+        print(index)
+        arrIndex = index
+        print("arrIndex from delegate: ", arrIndex)
     }
 }
 
