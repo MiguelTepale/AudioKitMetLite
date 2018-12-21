@@ -8,16 +8,16 @@
 //
 //
 // OPEN TICKETS
-// 1. wipe clean the taps array at in intervals triggered directly after the "first tap" ***
 // 2. clear up handleSlider() logic
-// 3. settings note change button operation logic - research data structures and methods
+// 3. clean up frequency change and hook up duration change
 //
 // QUESTIONS
 // 1. How to implement "lastTap" callback to wipe taps array clean
 // --- How to know what is a last tap? Measure distance from most recent tap time
 // --- Similar to setInterval(), using a conditional in the body
-// 2. How to extract some data and methods into classes?
-// 3. How to make "Keep Tapping" dynamically fit inside of tap button
+// 2. Types of data structures
+// 3. How to make "Keep Tapping" dynamically fit inside of tap button -- needs responsive tap button
+// 4. How to share data between view controllers?
 
 
 import UIKit
@@ -25,12 +25,6 @@ import AudioKit
 import JOCircularSlider
 
 class ViewController: UIViewController {
-    
-    
-    
-    // last tap timer
-//    var lastTapTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: (#selector(ViewController.)), userInfo: nil, repeats: true)
-    var lastTapTimer: Timer?
 
     // visualization image
     @IBOutlet weak var imageView: UIImageView!
@@ -49,6 +43,7 @@ class ViewController: UIViewController {
     // AudioKit objects and data
     let sequencer = AKSequencer()
     var bpmValue: Int = 120
+    var beepFreq: Double = 880.0
     
     // tap tempo data
     let interval: TimeInterval = 0.5
@@ -96,8 +91,10 @@ class ViewController: UIViewController {
         sequencer.enableLooping()
     
         // add audio tracks to sequencer
+        var noteNum = UInt8(beepFreq.frequencyToMIDINote())
+        print(noteNum)
         for i in 0..<4 {
-            sequencer.tracks[0].add(noteNumber: 80, velocity: 100, position: AKDuration(beats: Double(i)), duration: AKDuration(beats: 0.05))
+            sequencer.tracks[0].add(noteNumber: noteNum, velocity: 100, position: AKDuration(beats: Double(i)), duration: AKDuration(beats: 0.025))
         }
         
         // add callback tracks to sequencer
@@ -128,6 +125,7 @@ class ViewController: UIViewController {
         
         circularSlider.setValue(120)
         updateTempoLabel(bpm: 120)
+        print(sequencer.trackCount)
     }
 
     @IBAction func handleToggle(_ sender: UIButton) {
@@ -169,6 +167,10 @@ class ViewController: UIViewController {
     
     @IBAction func handleTap(_ sender: Any) {
         let thisTap = NSDate()
+        if taps.count > 0 && thisTap.timeIntervalSince1970 - taps[taps.count-1] > 2.0 {
+            taps.removeAll()
+        }
+        print(thisTap)
         var avg: Double
         if taps.count < 3 {
             taps.append(thisTap.timeIntervalSince1970)
@@ -196,11 +198,9 @@ class ViewController: UIViewController {
             sequencer.setTempo(Double(bpmValue))
             knob.setValue(tempVal, animated: true)
             circularSlider.setValue(tempVal)
+            updateTempoLabel(bpm: bpmValue)
         }
         
-
-        
-
         print("tap button pressed")
         
         // tap interval
@@ -216,11 +216,10 @@ class ViewController: UIViewController {
     
 
     @IBAction func showSettings(_ sender: Any) {
-        let settingsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "sbSettingsID") as! SettingsViewController
-        self.addChild(settingsVC)
-        settingsVC.view.frame = self.view.frame
-        self.view.addSubview(settingsVC.view)
-        settingsVC.didMove(toParent: self)
+    
+        let settingsViewController = storyboard?.instantiateViewController(withIdentifier: "sbSettingsID") as! SettingsViewController
+        settingsViewController.sequencer = sequencer
+        present(settingsViewController, animated: true, completion: nil)
     }
     
     private func updateTempoLabel(bpm: Int) {
