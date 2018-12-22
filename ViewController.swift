@@ -8,10 +8,8 @@
 //
 //
 // OPEN TICKETS
-// 1. arrIndex needs to be sent and come back from SettingsViewController
-// 2. clear up handleSlider() logic
-// 3. hook up duration change
-//
+// 1. clear up handleSlider() logic
+// 2. add constraints to storyboard to make responsive
 
 
 import UIKit
@@ -27,7 +25,6 @@ class ViewController: UIViewController, passDataBack {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var circularSlider: CircularSlider!
     @IBOutlet weak var tempoIndicator: UILabel!
-    @IBOutlet weak var knob: Knob!
     @IBOutlet weak var start: UIButton!
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var label: UILabel!
@@ -40,7 +37,7 @@ class ViewController: UIViewController, passDataBack {
     var beepFreq: Double = 880.0
     var arrIndex: Int?
     var arrIndexSent: Int?
-    var beepDuration: Int?
+    var beep: AKOscillatorBank?
     
     // tap tempo data
     let interval: TimeInterval = 0.5
@@ -52,7 +49,6 @@ class ViewController: UIViewController, passDataBack {
         super.viewDidLoad()
 
         arrIndex = 12
-        beepDuration = 50
         
         // slider format
         slider.minimumValue = 30
@@ -70,8 +66,8 @@ class ViewController: UIViewController, passDataBack {
         self.imageView.isHidden = true
         
         // instrument set up - sound and callback
-        var beep = AKOscillatorBank.init(waveform: AKTable(.sine), attackDuration: 0.01, decayDuration: 0.05, sustainLevel: 0.1, releaseDuration: 0.05, pitchBend: 0, vibratoDepth: 0, vibratoRate: 0)
-        var beepNode = AKMIDINode(node: beep)
+        beep = AKOscillatorBank.init(waveform: AKTable(.sine), attackDuration: 0.01, decayDuration: 0.05, sustainLevel: 0.1, releaseDuration:  0.05, pitchBend: 0, vibratoDepth: 0, vibratoRate: 0)
+        var beepNode = AKMIDINode(node: beep!)
         let callbackInst = AKMIDICallbackInstrument()
         
         // AudioKit final set up phase
@@ -114,15 +110,9 @@ class ViewController: UIViewController, passDataBack {
                 }
             }
         }
-        knob.setValue(120)
-        knob.lineWidth = 4
-        knob.pointerLength = 12
-        knob.addTarget(self, action: #selector(ViewController.handleSlider(_:)), for: .valueChanged)
-        knob.isHidden = true
         
         circularSlider.setValue(120)
         updateTempoLabel(bpm: 120)
-        print(sequencer.trackCount)
     }
 
     @IBAction func handleToggle(_ sender: UIButton) {
@@ -131,7 +121,6 @@ class ViewController: UIViewController, passDataBack {
             sequencer.stop()
         } else {
             sequencer.rewind()
-            print("restart sequencer position in seconds: ", sequencer.currentPosition.seconds)
             start.setTitle("Stop", for: .normal)
             sequencer.play()
         }
@@ -140,19 +129,15 @@ class ViewController: UIViewController, passDataBack {
     @IBAction func handleSlider(_ sender: Any) {
         var tempTempo: Int
         if sender is UISlider {
-            knob.setValue(slider.value, animated: true)
             tempTempo = Int(slider.value)
             circularSlider.setValue(Float(tempTempo))
             sequencer.setTempo(Double(tempTempo))
             label.text = "\(tempTempo)"
         } else if sender is JOCircularSlider.CircularSlider {
-            print(circularSlider.value)
             slider.value = ((circularSlider.value * 230)+30)
-            knob.setValue(slider.value)
             tempTempo = Int(slider.value)
             label.text = "\(tempTempo)"
         } else {
-            slider.value = knob.value
             circularSlider.setValue(slider.value)
             tempTempo = Int(slider.value)
             circularSlider.setValue(Float(tempTempo))
@@ -186,13 +171,12 @@ class ViewController: UIViewController, passDataBack {
                 var fourth = taps[taps.count-4]
                 avg = ((first-second)+(second-third)+(third-fourth)) / 3
             }
-            print("bpm: ", 60/avg)
+            print("bpm: ", Double(60/avg))
             bpmValue = Int(60/avg)
             let tempVal = Float(60/avg)
             label.text = "\(bpmValue)"
             slider.setValue(tempVal, animated: false)
             sequencer.setTempo(Double(bpmValue))
-            knob.setValue(tempVal, animated: true)
             circularSlider.setValue(tempVal)
             updateTempoLabel(bpm: bpmValue)
         }
@@ -202,13 +186,9 @@ class ViewController: UIViewController, passDataBack {
     
 
     @IBAction func showSettings(_ sender: Any) {
-        print("show settings", arrIndex)
-        print(beepDuration)
         let settingsViewController = storyboard?.instantiateViewController(withIdentifier: "sbSettingsID") as! SettingsViewController
         settingsViewController.sequencer = sequencer
         settingsViewController.arrIndex = arrIndex!
-        settingsViewController.beepDuration = beepDuration!
-//        performSegue(withIdentifier: "indexSegue", sender: self)
         settingsViewController.arrIndexProtocol = self
         present(settingsViewController, animated: true, completion: nil)
     }
@@ -217,15 +197,7 @@ class ViewController: UIViewController, passDataBack {
         var vc = segue.destination as! SettingsViewController
         vc.arrIndex = self.arrIndex!
         vc.sequencer = self.sequencer
-        vc.beepDuration = self.beepDuration!
     }
-    
-//    func onUserAction(data: Int) {
-//        print(data)
-//        arrIndex = data
-//        print("arrIndex: ", arrIndex)
-//        arrIndex = arrIndex!
-//    }
     
     private func updateTempoLabel(bpm: Int) {
         if bpm < 45 {
@@ -251,12 +223,8 @@ class ViewController: UIViewController, passDataBack {
         }
     }
     
-    func setArrIndex(index: Int, duration: Int) {
-        print(index)
+    func setArrIndex(index: Int) {
         arrIndex = index
-        print(duration)
-        beepDuration = duration
-        print(beepDuration)
         print("arrIndex from delegate: ", arrIndex)
     }
 }
