@@ -2,8 +2,7 @@
 //  SettingsViewController.swift
 //  
 //
-//  Created by Andrew Seeley.
-//  Modified for MidiMetronome by Sam Parsons on 12/18/18.
+//  Created by Sam Parsons.
 //
 // 
 
@@ -11,7 +10,7 @@ import UIKit
 import AudioKit
 
 protocol passDataBack {
-    func setArrIndex(index: Int)
+    func setArrIndex(index: Int, duration: Int)
 }
 
 class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationControllerDelegate {
@@ -21,6 +20,7 @@ class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationC
     var arrIndexProtocol: passDataBack?
     
     @IBOutlet weak var freqLabel: UILabel!
+    @IBOutlet weak var durLabel: UILabel!
     @IBOutlet weak var decFreqBtn: UIButton!
     @IBOutlet weak var incFreqBtn: UIButton!
 
@@ -29,6 +29,7 @@ class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationC
         "A4", "Bb4", "B4", "C5", "Db5", "D5", "Eb5", "E5", "F5", "Gb5", "G5", "Ab5", "A5", "Bb5", "B5", "C6", "Db6", "D6", "Eb6", "E6", "F6", "Gb6", "G6", "Ab6", "A6"
     ]
     var arrIndex: Int = 12 // how to read this variable from segue?
+    var beepDuration: Int = 50 //
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +44,7 @@ class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationC
     
         print(arrIndex)
         freqLabel.text = beepNoteArr[arrIndex]
+        durLabel.text = "\(beepDuration)"
         print("set up arrINdex: ", arrIndex)
     }
     
@@ -51,13 +53,12 @@ class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationC
         print("arrIndexProtocol")
         print(arrIndex)
 //        performSegue(withIdentifier: "indexSegueBack", sender: self)
-        arrIndexProtocol?.setArrIndex(index: arrIndex)
+        arrIndexProtocol?.setArrIndex(index: arrIndex, duration: beepDuration)
 //        mainView.onUserAction(data: arrIndex)
         dismiss(animated: true, completion: nil)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
         mainView.arrIndex = self.arrIndex
         mainView.sequencer = self.sequencer
     }
@@ -92,6 +93,19 @@ class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationC
         print("decreasing frequency")
         var tempLabel = freqLabel.text
         generateMIDIOutput(note: tempLabel ?? "C5", incDec: false)
+    }
+    
+    @IBAction func incDuration(_ sender: Any) {
+        beepDuration = beepDuration + 1
+        durLabel.text = "\(beepDuration)"
+        print("incremented duration: ", beepDuration)
+    }
+    
+    
+    @IBAction func decDuration(_ sender: Any) {
+        beepDuration = beepDuration - 1
+        durLabel.text = "\(beepDuration)"
+        print("decremented duration: ", beepDuration)
     }
     
     func generateMIDIOutput(note: String, incDec: Bool) {
@@ -136,7 +150,7 @@ class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationC
     }
     
     private func webViewDidFinishLoad(webView: UIWebView) {
-        arrIndexProtocol?.setArrIndex(index: arrIndex)
+        arrIndexProtocol?.setArrIndex(index: arrIndex, duration: beepDuration)
     }
     
     /*

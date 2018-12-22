@@ -40,6 +40,7 @@ class ViewController: UIViewController, passDataBack {
     var beepFreq: Double = 880.0
     var arrIndex: Int?
     var arrIndexSent: Int?
+    var beepDuration: Int?
     
     // tap tempo data
     let interval: TimeInterval = 0.5
@@ -51,6 +52,7 @@ class ViewController: UIViewController, passDataBack {
         super.viewDidLoad()
 
         arrIndex = 12
+        beepDuration = 50
         
         // slider format
         slider.minimumValue = 30
@@ -201,9 +203,11 @@ class ViewController: UIViewController, passDataBack {
 
     @IBAction func showSettings(_ sender: Any) {
         print("show settings", arrIndex)
+        print(beepDuration)
         let settingsViewController = storyboard?.instantiateViewController(withIdentifier: "sbSettingsID") as! SettingsViewController
         settingsViewController.sequencer = sequencer
         settingsViewController.arrIndex = arrIndex!
+        settingsViewController.beepDuration = beepDuration!
 //        performSegue(withIdentifier: "indexSegue", sender: self)
         settingsViewController.arrIndexProtocol = self
         present(settingsViewController, animated: true, completion: nil)
@@ -213,6 +217,7 @@ class ViewController: UIViewController, passDataBack {
         var vc = segue.destination as! SettingsViewController
         vc.arrIndex = self.arrIndex!
         vc.sequencer = self.sequencer
+        vc.beepDuration = self.beepDuration!
     }
     
 //    func onUserAction(data: Int) {
@@ -223,7 +228,6 @@ class ViewController: UIViewController, passDataBack {
 //    }
     
     private func updateTempoLabel(bpm: Int) {
-        print(arrIndex)
         if bpm < 45 {
             tempoIndicator.text = "Grave"
         } else if bpm < 60 {
@@ -247,9 +251,12 @@ class ViewController: UIViewController, passDataBack {
         }
     }
     
-    func setArrIndex(index: Int) {
+    func setArrIndex(index: Int, duration: Int) {
         print(index)
         arrIndex = index
+        print(duration)
+        beepDuration = duration
+        print(beepDuration)
         print("arrIndex from delegate: ", arrIndex)
     }
 }

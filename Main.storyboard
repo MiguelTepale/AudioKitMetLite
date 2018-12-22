@@ -228,12 +228,18 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="23"/>
                                         <state key="normal" title="+"/>
+                                        <connections>
+                                            <action selector="incDuration:" destination="Bzm-9n-dON" eventType="touchUpInside" id="DjY-eD-nox"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sgd-4U-s8t">
                                         <rect key="frame" x="66.5" y="138.5" width="30" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="23"/>
                                         <state key="normal" title="-"/>
+                                        <connections>
+                                            <action selector="decDuration:" destination="Bzm-9n-dON" eventType="touchUpInside" id="Vc5-ro-lQo"/>
+                                        </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Beep Duration" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fan-aQ-3kr">
                                         <rect key="frame" x="75.5" y="122" width="87" height="16"/>
@@ -264,7 +270,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0.5" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Feh-zs-kw4">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="50" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Feh-zs-kw4">
                                 <rect key="frame" x="165" y="361" width="45" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="22"/>
@@ -281,6 +287,7 @@
                     </view>
                     <connections>
                         <outlet property="decFreqBtn" destination="GhO-W1-QmB" id="VHT-vz-tyU"/>
+                        <outlet property="durLabel" destination="Feh-zs-kw4" id="SWM-eH-hQI"/>
                         <outlet property="freqLabel" destination="67V-Zc-aJD" id="eM7-Sy-tNw"/>
                         <outlet property="incFreqBtn" destination="0ve-Vv-pna" id="wTP-Os-kBL"/>
                     </connections>
