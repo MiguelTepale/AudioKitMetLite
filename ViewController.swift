@@ -111,10 +111,12 @@ class ViewController: UIViewController, passDataBack {
             }
         }
         
+        // set initial values for sliders and label
         circularSlider.setValue(120)
         updateTempoLabel(bpm: 120)
     }
 
+    // play/stop button method
     @IBAction func handleToggle(_ sender: UIButton) {
         if sequencer.isPlaying {
             start.setTitle("Start", for: .normal) // What does for: .normal mean
@@ -126,6 +128,7 @@ class ViewController: UIViewController, passDataBack {
         }
     }
     
+    // handles both horizontal slider and circular knob
     @IBAction func handleSlider(_ sender: Any) {
         var tempTempo: Int
         if sender is UISlider {
@@ -137,7 +140,7 @@ class ViewController: UIViewController, passDataBack {
             slider.value = ((circularSlider.value * 230)+30)
             tempTempo = Int(slider.value)
             label.text = "\(tempTempo)"
-        } else {
+        } else { // used with previous version of knob - could probably delete
             circularSlider.setValue(slider.value)
             tempTempo = Int(slider.value)
             circularSlider.setValue(Float(tempTempo))
@@ -148,14 +151,14 @@ class ViewController: UIViewController, passDataBack {
     
     @IBAction func handleTap(_ sender: Any) {
         let thisTap = NSDate()
+        // checks if distance from last tap to current tap crosses threshold, if so, taps array wiped clean
         if taps.count > 0 && thisTap.timeIntervalSince1970 - taps[taps.count-1] > 2.0 {
             taps.removeAll()
         }
-        print(thisTap)
         var avg: Double
         if taps.count < 3 {
             taps.append(thisTap.timeIntervalSince1970)
-            tap.setTitle("Keep Tapping", for: .normal) // how to make this dynamically fit in the button without elipses??
+            tap.setTitle("Keep Tapping", for: .normal) // this is useless with a button that uses an image
             // label on view controller says "keep tapping" until minTaps is met
         } else {
             taps.append(thisTap.timeIntervalSince1970)
@@ -180,25 +183,18 @@ class ViewController: UIViewController, passDataBack {
             circularSlider.setValue(tempVal)
             updateTempoLabel(bpm: bpmValue)
         }
-        
         print("tap button pressed")
     }
-    
 
     @IBAction func showSettings(_ sender: Any) {
         let settingsViewController = storyboard?.instantiateViewController(withIdentifier: "sbSettingsID") as! SettingsViewController
+        // passing sequencer and arrIndex to instantiated settingsVC
         settingsViewController.sequencer = sequencer
         settingsViewController.arrIndex = arrIndex!
         settingsViewController.arrIndexProtocol = self
         present(settingsViewController, animated: true, completion: nil)
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        var vc = segue.destination as! SettingsViewController
-        vc.arrIndex = self.arrIndex!
-        vc.sequencer = self.sequencer
-    }
-    
+
     private func updateTempoLabel(bpm: Int) {
         if bpm < 45 {
             tempoIndicator.text = "Grave"

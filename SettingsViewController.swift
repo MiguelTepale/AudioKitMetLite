@@ -15,8 +15,7 @@ protocol passDataBack {
 
 class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationControllerDelegate {
 
-    var mainView: ViewController = ViewController(nibName: nil, bundle: nil)
-    var sequencer = AKSequencer()
+    var sequencer: AKSequencer?
     var arrIndexProtocol: passDataBack?
     
     @IBOutlet weak var freqLabel: UILabel!
@@ -34,7 +33,7 @@ class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationC
 
         self.view.backgroundColor = UIColor.black.withAlphaComponent(0.75)
         
-        for i in 0...25 {
+        for i in 0...25 { // should I just do this literally like beepNoteArr?
             var tempVar = i + 69
             beepNumberArr.append(MIDINoteNumber(tempVar))
         }
@@ -42,15 +41,9 @@ class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationC
         freqLabel.text = beepNoteArr[arrIndex]
     }
     
-
     @IBAction func closeSettings(_ sender: Any)  {
         arrIndexProtocol?.setArrIndex(index: arrIndex)
         dismiss(animated: true, completion: nil)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        mainView.arrIndex = self.arrIndex
-        mainView.sequencer = self.sequencer
     }
     
     @IBAction func increaseFreq(_ sender: Any) {
@@ -73,10 +66,10 @@ class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationC
                 print("increase button pressed")
                 arrIndex = arrIndex + 1
                 freqLabel.text = beepNoteArr[arrIndex]
-                sequencer.tracks[0].replaceMIDINoteData(with: [])
+                sequencer!.tracks[0].replaceMIDINoteData(with: [])
                 var noteNum: MIDINoteNumber = MIDINoteNumber(beepNumberArr[arrIndex])
                 for i in 0..<4 {
-                    sequencer.tracks[0].add(noteNumber: noteNum, velocity: 100, position: AKDuration(beats: Double(i)), duration: AKDuration(beats: 0.05))
+                    sequencer!.tracks[0].add(noteNumber: noteNum, velocity: 100, position: AKDuration(beats: Double(i)), duration: AKDuration(beats: 0.05))
                 }
             }
         } else {
@@ -86,10 +79,10 @@ class SettingsViewController: UIViewController, UIWebViewDelegate, UINavigationC
                 print("decrease button pressed")
                 arrIndex = arrIndex - 1
                 freqLabel.text = beepNoteArr[arrIndex]
-                sequencer.tracks[0].replaceMIDINoteData(with: [])
+                sequencer!.tracks[0].replaceMIDINoteData(with: [])
                 var noteNum: MIDINoteNumber = MIDINoteNumber(beepNumberArr[arrIndex])
                 for i in 0..<4 {
-                    sequencer.tracks[0].add(noteNumber: noteNum, velocity: 100, position: AKDuration(beats: Double(i)), duration: AKDuration(beats: 0.05))
+                    sequencer!.tracks[0].add(noteNumber: noteNum, velocity: 100, position: AKDuration(beats: Double(i)), duration: AKDuration(beats: 0.05))
                 }
             }
         }
