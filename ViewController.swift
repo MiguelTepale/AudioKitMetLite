@@ -47,7 +47,7 @@ class ViewController: UIViewController, passDataBack {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-
+        
         arrIndex = 12
         
         // slider format
@@ -89,7 +89,7 @@ class ViewController: UIViewController, passDataBack {
         var noteNum = UInt8(beepFreq.frequencyToMIDINote())
         print(noteNum)
         for i in 0..<4 {
-            sequencer.tracks[0].add(noteNumber: noteNum, velocity: 100, position: AKDuration(beats: Double(i)), duration: AKDuration(beats: 0.025))
+            sequencer.tracks[0].add(noteNumber: noteNum, velocity: 100, position: AKDuration(beats: Double(i)), duration: AKDuration(beats: 0.05))
         }
         
         // add callback tracks to sequencer
@@ -112,7 +112,6 @@ class ViewController: UIViewController, passDataBack {
         }
         
         // set initial values for sliders and label
-        circularSlider.setValue(120)
         updateTempoLabel(bpm: 120)
     }
 
@@ -131,21 +130,27 @@ class ViewController: UIViewController, passDataBack {
     // handles both horizontal slider and circular knob
     @IBAction func handleSlider(_ sender: Any) {
         var tempTempo: Int
+        print(circularSlider.value)
         if sender is UISlider {
+            print("first")
             tempTempo = Int(slider.value)
-            circularSlider.setValue(Float(tempTempo))
+            circularSlider.value = CGFloat(slider.value)
             sequencer.setTempo(Double(tempTempo))
             label.text = "\(tempTempo)"
         } else if sender is JOCircularSlider.CircularSlider {
-            slider.value = ((circularSlider.value * 230)+30)
+            print("second")
+            print(circularSlider.value)
+            slider.value = Float(circularSlider.value)
             tempTempo = Int(slider.value)
             label.text = "\(tempTempo)"
+//            circularSlider.value = CGFloat(slider.value)
         } else { // used with previous version of knob - could probably delete
-            circularSlider.setValue(slider.value)
+//            circularSlider.value = CGFloat(slider.value)
+            print("third")
             tempTempo = Int(slider.value)
-            circularSlider.setValue(Float(tempTempo))
             label.text = "\(tempTempo)"
         }
+//        circularSlider.value = CGFloat(slider.value)
         updateTempoLabel(bpm: tempTempo)
     }
     
@@ -180,7 +185,7 @@ class ViewController: UIViewController, passDataBack {
             label.text = "\(bpmValue)"
             slider.setValue(tempVal, animated: false)
             sequencer.setTempo(Double(bpmValue))
-            circularSlider.setValue(tempVal)
+            circularSlider.value = CGFloat(tempVal)
             updateTempoLabel(bpm: bpmValue)
         }
         print("tap button pressed")
@@ -232,6 +237,14 @@ extension UIButton {
         self.layer.shadowRadius = 6
         self.layer.shadowOpacity = 0.5
         self.layer.shadowOffset = CGSize(width: 0, height: 0)
+    }
+}
+
+extension CircularSlider {
+    func applyDesign() {
+        self.maximumValue = 260
+        self.minimumValue = 30
+        
     }
 }
 

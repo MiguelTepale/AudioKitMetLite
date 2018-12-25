@@ -130,9 +130,12 @@
                                     <userDefinedRuntimeAttribute type="color" keyPath="maxidotOnColor">
                                         <color key="value" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                        <real key="value" value="120"/>
+                                    </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <action selector="handleSlider:" destination="BYZ-38-t0r" eventType="valueChanged" id="PMv-Id-FdT"/>
+                                    <action selector="handleSlider:" destination="BYZ-38-t0r" eventType="valueChanged" id="33F-wZ-pzh"/>
                                 </connections>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Allegro Moderato" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nzu-cc-rZI">
